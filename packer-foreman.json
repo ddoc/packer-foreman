@@ -1,0 +1,64 @@
+{
+  "provisioners": [
+    {
+      "type": "shell",
+      "environment_vars": [
+        "foreman_release={{user `foreman_release`}}"
+      ],
+      "scripts": [
+        "scripts/virtualbox.sh",
+        "scripts/vagrant.sh",
+        "scripts/foreman.sh",
+        "scripts/cleanup.sh",
+        "scripts/zerodisk.sh"
+      ],
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'"
+    }
+  ],
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
+      ],
+      "vm_name": "foreman-{{user `foreman_release`}}",
+      "boot_wait": "10s",
+      "disk_size": 20480,
+      "guest_os_type": "RedHat_64",
+      "http_directory": "http",
+      "iso_checksum": "bb9af2aea1344597e11070abe6b1fcd3",
+      "iso_checksum_type": "md5",
+      "iso_url": "http://mirrors.usc.edu/pub/linux/distributions/centos/6.4/isos/x86_64/CentOS-6.4-x86_64-netinstall.iso",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "10000s",
+      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'vagrant'|sudo -S sh 'shutdown.sh'",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "480"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "1"
+        ]
+      ]
+    }
+  ],
+      "post-processors": [
+        {
+            "output": "builds/{{.Provider}}/foreman-{{user `foreman_release`}}.box",
+            "type": "vagrant"
+        }
+    ],
+    "variables": {
+        "foreman_release": "1.5"
+    }
+}
