@@ -26,7 +26,6 @@ production:
   username: root 
   password: password
   host: 127.0.0.1 
-  socket: "/var/run/mysqld/mysqld.sock"
 DATABASE
 foreman-rake db:migrate
 foreman-rake db:seed

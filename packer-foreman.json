@@ -21,7 +21,7 @@
       "boot_command": [
         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
       ],
-      "vm_name": "foreman-{{user `foreman_release`}}",
+      "vm_name": "foreman-{{user `foreman_release`}}-{{timestamp}}",
       "boot_wait": "10s",
       "disk_size": 20480,
       "guest_os_type": "RedHat_64",
@@ -54,7 +54,7 @@
   ],
       "post-processors": [
         {
-            "output": "builds/{{.Provider}}/foreman-{{user `foreman_release`}}.box",
+            "output": "builds/{{.Provider}}/foreman-{{user `foreman_release`}}-{{timestamp}}.box",
             "type": "vagrant"
         }
     ],
